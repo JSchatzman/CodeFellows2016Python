@@ -17,13 +17,19 @@ gradelist = set((i[2] for i in studentdata[1:]))
 #Create dictionary with teachers as keys and values as student count as value
 teacherstudentcount = {}
 for i in teacherlist:
-    teacherstudentcount[i] = len([x for x in studentdata if i == x[3]])
+    teacherstudentcount[i] = len([x for x in studentdata[1:] if i == x[3]])
 
-#Create dictionary with teachers as grades and values as student count as value
+#Create dictionary with grades as keys and values as student count
 gradestudentcount = {}
 for i in gradelist:
-    teacherstudentcount[i] = len([x for x in studentdata if i == x[2]])
+    gradestudentcount[i] = len([x for x in studentdata[1:] if i == x[2]])
 
+#Create nested array that maps teachers to their grades
+teachermap = []
+for i in studentdata[1:]:
+    if [i[2],i[3]] not in teachermap:
+        teachermap.append([i[2],i[3]])
+teachermap.sort(key = lambda x: (int(x[0]) if x[0].isdigit() else -999, x[1]))
 
 
 
@@ -61,11 +67,6 @@ def creategradeeport():
 
 def createteacherreport():
     """create report showing average gpa for each grade and teacher"""  
-    teachermap = []
-    for i in studentdata[1:]:
-        if [i[2],i[3]] not in teachermap:
-            teachermap.append([i[2],i[3]])
-    teachermap.sort(key = lambda x: (int(x[0]) if x[0].isdigit() else -999, x[1]))
     print ('  Grade ---------- Teacher ------------ Average GPA')
     print ('--------------------------------------------------') 
     for y in sorted(teachermap, key = lambda x: (int(x[0]) if x[0].isdigit() else -999, x[1])):
@@ -78,31 +79,39 @@ def createteacherreport():
 def addstudent():
     """this function adds a new student to studentdata if a valid GPA and available teacher is chosen"""
     studentname = raw_input('Please enter new student''s name \n')
-    studentgpa = raw_input('Please enter new student''s GPA as a number between 0 and 100 \n')
-    while not studentgpa.isdigit() or (float(studentgpa) >= 100 or float(studentgpa) <= 0):
-        studentgpa = raw_input('You have entered an invalid GPA, Please enter a number between 0 and 100 \n')
     for i in teacherlist:
         print (i)   
-    teachername = raw_input('Please enter new student''s teacher.  The list of teachers is shown below.')
+    teachername = raw_input('Please enter new student''s teacher.  The list of teachers is shown above.')
     while teachername not in teacherlist:
         teachername = raw_input('Please enter an existing teacher''s name.')
     studentcount = len([i for i in studentdata if i[3] == teachername])
-    teachergrade = next(iter(set([i[2] for i in studentdata if i[3] == teachername])))
+    teachergrade = set([i[2] for i in studentdata if i[3] == teachername]).pop()
     gpa = random.randint(0,100)
     if studentcount < 10:
         studentdata.append([studentname, gpa, teachergrade, teachername])
         teacherstudentcount[teachername] += 1
         gradestudentcount[teachergrade] += 1
-        print ('All done, {0} has been assigned to Mr/Mrs. {1}''s class with a GPA of {2}.').format(studentname, teachername, gpa)
+        print ("All done, {0} has been assigned to Mr/Mrs. {1}'s class with a GPA of {2}.").format(studentname, teachername, gpa)
     else:
-        print('nope')
-        #print (studentdata[len(studentdata)-5:]) test if row is actually appended
+        alternateteacher = set([i[3] for i in studentdata if i[3] != teachername and i[2] == teachergrade])
+        if alternateteacher:
+            alternateteacher = alternateteacher.pop()
+            studentdata.append([studentname, gpa, teachergrade, alternateteacher])
+            teacherstudentcount[alternateteacher] += 1
+            gradestudentcount[teachergrade] += 1
+            print ("There are no spots available in Mr/Mrs. {0}'s class.  The new student has been assigned to Mr./Mrs. {1} class with a gpa of {2}".format(teachername, alternateteacher, gpa))
+        else:
+            print ("We're sorry, there are no spots available for the new student in his/her grade. {0} will not be able to attend this school".format(studentname))
+
+def addteacher():
+    newteacher = raw_input("Please enter new teacher's name. \n")
+    teacherlist.extend(newteacher)
+    gradefinder = lambda x: str(x) if x > 0 else 'K'
+    teachermap.append([gradefinder(random.randint(0,12)), newteacher])
+        
 
         
-    
-    
-    
-        
+           
 def userprompt():
     """this function will be called as part of the module to intake user input and cal other functions"""
     inputquestion = 'If you would like a grade report broken down by grade level, please enter ''grade''. \n'
@@ -125,7 +134,6 @@ def userprompt():
 
 if __name__ == '__main__':
     print (teacherstudentcount)
-    #print (teachermap)
     addstudent()
     #emptycheck()
     #createintroreport()
