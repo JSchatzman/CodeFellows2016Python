@@ -32,14 +32,14 @@ for i in studentdata[1:]:
 teachermap.sort(key = lambda x: (int(x[0]) if x[0].isdigit() else -999, x[1]))
 
 
-
-#Check for Empty School
 def emptycheck():
+    """check if school has no students or teachers.  If so, exit the program"""
     if not studentlist or not teacherlist:
         if not studentlist:
             print ('This school has no students!')
         if not teacherlist:
-            print ('This school has no teachers!')
+            print ('This school has no teachers! No students are allowed!.')
+            studentlist = set()
         print ('The program will now exit')
         sys.exit()
 
@@ -81,9 +81,9 @@ def addstudent():
     studentname = raw_input('Please enter new student''s name \n')
     for i in teacherlist:
         print (i)   
-    teachername = raw_input('Please enter new student''s teacher.  The list of teachers is shown above.')
+    teachername = raw_input('Please enter new student''s teacher.  The list of teachers is shown above. \n')
     while teachername not in teacherlist:
-        teachername = raw_input('Please enter an existing teacher''s name.')
+        teachername = raw_input('Please enter an existing teacher''s name. \n')
     studentcount = len([i for i in studentdata if i[3] == teachername])
     teachergrade = set([i[2] for i in studentdata if i[3] == teachername]).pop()
     gpa = random.randint(0,100)
@@ -92,6 +92,7 @@ def addstudent():
         teacherstudentcount[teachername] += 1
         gradestudentcount[teachergrade] += 1
         print ("All done, {0} has been assigned to Mr/Mrs. {1}'s class with a GPA of {2}.").format(studentname, teachername, gpa)
+        #print (studentdata[len(studentdata)-5:]) #test to see if insert worked
     else:
         alternateteacher = set([i[3] for i in studentdata if i[3] != teachername and i[2] == teachergrade])
         if alternateteacher:
@@ -100,14 +101,19 @@ def addstudent():
             teacherstudentcount[alternateteacher] += 1
             gradestudentcount[teachergrade] += 1
             print ("There are no spots available in Mr/Mrs. {0}'s class.  The new student has been assigned to Mr./Mrs. {1} class with a gpa of {2}".format(teachername, alternateteacher, gpa))
+            #print (studentdata[len(studentdata)-5:]) #test to see if insert worked
         else:
             print ("We're sorry, there are no spots available for the new student in his/her grade. {0} will not be able to attend this school".format(studentname))
 
+
 def addteacher():
+    """add a teacher to teachermap and teacherlist"""
     newteacher = raw_input("Please enter new teacher's name. \n")
-    teacherlist.extend(newteacher)
+    teacherlist.update(newteacher)
     gradefinder = lambda x: str(x) if x > 0 else 'K'
     teachermap.append([gradefinder(random.randint(0,12)), newteacher])
+    print (teachermap)
+
 
 def rollcall():
     print ('  Grade  -----------  StudentName')
@@ -115,7 +121,7 @@ def rollcall():
         gradelength = len(i[2])
         print ('   {0}{1}{2}').format(i[2], ' '*(17-gradelength), i[0])
         
-           
+        
 def userprompt():
     """this function will be called as part of the module to intake user input and cal other functions"""
     inputquestion = 'If you would like a grade report broken down by grade level, please enter ''grade''.'
@@ -140,7 +146,6 @@ def userprompt():
 
     
 if __name__ == '__main__':
-    print sys.argv
     if 'roll_call' in sys.argv:
         emptycheck()    
         rollcall()
@@ -148,12 +153,6 @@ if __name__ == '__main__':
     emptycheck()    
     createintroreport()
     userprompt()
-    #print (teacherstudentcount)
     #addstudent()
-    #emptycheck()
-    #createintroreport()
-    #userprompt()
+    #addteacher()
 
-
-#creategradeeport()
-#createteacherreport()
