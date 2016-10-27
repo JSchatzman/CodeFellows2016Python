@@ -29,27 +29,16 @@ def createintroreport():
 
 #For the secondary reports, we will opt to not use input in the following functions but instead use the global variables we already have
 def creategradeeport():
-    """create report showing average gpa for each grade"""    
+    """create report showing average gpa for each grade"""
+    print ('  Grade ---------- Average GPA')    
     for i in sorted(gradelist, key = lambda x: int(x) if x.isdigit() else -999):
         grades = [int(y[1]) for y in studentdata[1:] if y[2] == i]
-        print ("The average GPA for grade {0} is {1}".format(i, sum(grades)/len(grades)))
+        #print ("The average GPA for grade {0} is {1}".format(i, sum(grades)/len(grades)))
+        print ('    {0}{1}{2}'.format(i, ' '*(18-len(i)), str(sum(grades)/len(grades))[0:5]))
+    print ('-----------------------------------------------------------------------------')
         
 
 def createteacherreport():
-    """create report showing average gpa for each grade and teacher"""    
-    teachermap = {}
-    for i in studentdata[1:]:
-        if i[2] not in teachermap:
-            teachermap[i[2]] = [i[3]]
-        elif i[2] in teachermap and i[3] not in teachermap[i[2]]:
-            teachermap[i[2]].append(i[3])
-    print (teachermap)
-    for y in teachermap:
-        for x in teachermap[y]:
-            print (y, x)
-        
-
-def createteacherreport2():
     """create report showing average gpa for each grade and teacher"""  
     teachermap = []
     for i in studentdata[1:]:
@@ -61,14 +50,18 @@ def createteacherreport2():
     for y in sorted(teachermap, key = lambda x: (int(x[0]) if x[0].isdigit() else -999, x[1])):
         grades = [int(i[1]) for i in studentdata[1:] if i[2] == y[0] and i[3] == y[1]]
         teachernamelength = len(y[1])
-        print ('  {0} {1}  {2}                {3} {4}'.format(y[1], ' '*(12-teachernamelength), y[0], sum(grades)/len(grades), teachernamelength))
+        grandenamelength = len(y[0])
+        print ('    {0}{1}{2}{3}{4}'.format(y[0], ' '*(15-grandenamelength) , y[1], ' '*(24-teachernamelength), str(sum(grades)/len(grades))[0:5]))
         #print ('Mr/Mrs. {0} teaches {1} grade and students in his/her class earn an average GPA of {2}'.format(y[1], y[0], sum(grades)/len(grades)))
         
 
 
+if __name__ == '__main__':
+    createintroreport()
+    inputquestion = 'If you would like a grade report broken down by grade level, please enter ''grade''. \n'
+    inputquestion += 'If you would like a grade report broken down by teacher, please enter ''teacher''. \n''
+    inputquestion += 'If you would like exit, please enter ''exit'''
+    reportinput = input(inputquestion)
 
-
-
-#createintroreport()
 #creategradeeport()
-createteacherreport2()
+#createteacherreport()
