@@ -5,7 +5,7 @@ import random
 schoolname = "Jordan's School"
 
 #Import TSV data as source of all students, GPAs, grades and teachers
-studentdata = [tuple(line.strip().split('\t')) for line in open('emptyschooltest.txt','r')]
+studentdata = [tuple(line.strip().split('\t')) for line in open('studentstsv.txt','r')]
 
 #From studentdata, create set of distinct students and teachers.
 studentlist = set((i[0] for i in studentdata[1:]))
@@ -18,6 +18,8 @@ gradelist = set((i[2] for i in studentdata[1:]))
 gpalist = [int(i[1]) for i in studentdata[1:]]
 
 
+
+
 #Check for Empty School
 def emptycheck():
     if not studentlist or not teacherlist:
@@ -25,6 +27,7 @@ def emptycheck():
             print ('This school has no students!')
         if not teacherlist:
             print ('This school has no teachers!')
+        print ('The program will now exit')
         sys.exit()
 
 #Create Intro Report
@@ -38,7 +41,7 @@ def createintroreport():
     print ('On average, students at this school maintain a {0} gpa.'.format(sum(gpalist)/len(gpalist)))
     print ('-'*50)
 
-#For the secondary reports, we will opt to not use input in the following functions but instead use the global variables we already have
+
 def creategradeeport():
     """create report showing average gpa for each grade"""
     print ('  Grade ---------- Average GPA')    
@@ -66,8 +69,17 @@ def createteacherreport():
 
 def addstudent():
     studentname = input('Please enter new student''s name \n')
-    students 
-
+    studentgpa = input('Please enter new student''s GPA as a number between 0 and 100')
+    while not studentgpa.isdigit() or (float(studentgpa) >= 100 or float(studentgpa) <= 0):
+        studentgpa = input('You have entered an invalid GPA, Please enter a number between 0 and 100 \n')
+    for i in teacherlist:
+        print (i)   
+    teachername = input('Please enter new student''s teacher.  The list of teachers is shown below.')
+    while teachername not in teacherlist:
+        teachername = input('Please enter an existing teacher''s name.')
+    
+        
+        
 
 def userprompt():
     """this function will be called as part of the module to intake user input and cal other functions"""
@@ -82,7 +94,7 @@ def userprompt():
     elif reportinput == 'exit':
         sys.exit()
     else:
-        print ('Please enter a valid input as instructed above')
+        print ('Please enter a valid input as instructed')
         userprompt()
 
     
@@ -90,9 +102,10 @@ def userprompt():
 
 
 if __name__ == '__main__':
-    emptycheck()
-    createintroreport()
-    userprompt()
+    addstudent()
+    #emptycheck()
+    #createintroreport()
+    #userprompt()
 
 
 #creategradeeport()
