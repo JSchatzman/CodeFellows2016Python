@@ -108,13 +108,17 @@ def addteacher():
     teacherlist.extend(newteacher)
     gradefinder = lambda x: str(x) if x > 0 else 'K'
     teachermap.append([gradefinder(random.randint(0,12)), newteacher])
-        
 
+def rollcall():
+    print ('  Grade  -----------  StudentName')
+    for i in sorted(studentdata[1:], key = lambda x: (int(x[2]) if x[2].isdigit() else -999, x[0])):
+        gradelength = len(i[2])
+        print ('   {0}{1}{2}').format(i[2], ' '*(17-gradelength), i[0])
         
            
 def userprompt():
     """this function will be called as part of the module to intake user input and cal other functions"""
-    inputquestion = 'If you would like a grade report broken down by grade level, please enter ''grade''. \n'
+    inputquestion = 'If you would like a grade report broken down by grade level, please enter ''grade''.'
     inputquestion += 'If you would like a grade report broken down by teacher, please enter ''teacher''. \n'
     inputquestion += 'If you would like exit, please enter ''exit''. \n'
     reportinput = raw_input(inputquestion)
@@ -123,18 +127,29 @@ def userprompt():
     elif reportinput == 'teacher':
         createteacherreport()
     elif reportinput == 'exit':
-        sys.exit()
+        confirmexit = raw_input("Are you sure you want to exist, please enter 'Yes' or 'No \n")
+        while confirmexit != 'Yes' and confirmexit != 'No':
+            confirmexit = raw_input("Please enter 'Yes' or 'No \n")
+        if confirmexit == 'Yes':
+            sys.exit()
+        elif confirmexit == 'No':
+            userprompt()
     else:
         print ('Please enter a valid input as instructed')
         userprompt()
 
     
-        
-
-
 if __name__ == '__main__':
-    print (teacherstudentcount)
-    addstudent()
+    print sys.argv
+    if 'roll_call' in sys.argv:
+        emptycheck()    
+        rollcall()
+        sys.exit()
+    emptycheck()    
+    createintroreport()
+    userprompt()
+    #print (teacherstudentcount)
+    #addstudent()
     #emptycheck()
     #createintroreport()
     #userprompt()
