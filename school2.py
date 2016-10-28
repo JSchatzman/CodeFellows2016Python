@@ -39,11 +39,10 @@ def emptycheck():
             print ('This school has no students!')
         if not teacherlist:
             print ('This school has no teachers! No students are allowed!.')
-            studentlist = set()
         print ('The program will now exit')
         sys.exit()
 
-#Create Intro Report
+
 def createintroreport():
     """print student count, teacher count, and average gpa"""
     gpalist = [int(i[1]) for i in studentdata[1:]]
@@ -56,7 +55,7 @@ def createintroreport():
     print ('-'*50)
 
 
-def creategradeeport():
+def creategradereport():
     """create report showing average gpa for each grade"""
     print ('  Grade ---------- Average GPA')    
     for i in sorted(gradelist, key = lambda x: int(x) if x.isdigit() else -999):
@@ -116,6 +115,7 @@ def addteacher():
 
 
 def rollcall():
+    """print list of all students and their grades"""
     print ('  Grade  -----------  StudentName')
     for i in sorted(studentdata[1:], key = lambda x: (int(x[2]) if x[2].isdigit() else -999, x[0])):
         gradelength = len(i[2])
@@ -129,13 +129,13 @@ def userprompt():
     inputquestion += 'If you would like exit, please enter ''exit''. \n'
     reportinput = raw_input(inputquestion)
     if reportinput == 'grade':
-        createteacherreport()
+        creategradereport()
     elif reportinput == 'teacher':
         createteacherreport()
     elif reportinput == 'exit':
         confirmexit = raw_input("Are you sure you want to exist, please enter 'Yes' or 'No \n")
         while confirmexit != 'Yes' and confirmexit != 'No':
-            confirmexit = raw_input("Please enter 'Yes' or 'No \n")
+            confirmexit = raw_input("Please enter 'Yes' or 'No'' \n")
         if confirmexit == 'Yes':
             sys.exit()
         elif confirmexit == 'No':
